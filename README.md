@@ -4,6 +4,8 @@ Fork of [SpacehuhnTech/esp8266_deauther](https://github.com/SpacehuhnTech/esp826
 
 All credit for the actual deauther engine — scanning, attack logic, the menu/CLI/web framework — goes to [Spacehuhn](https://github.com/spacehuhntech) and contributors. See `LICENSE` (MIT).
 
+**Docs:** [docs/manual-ru.html](docs/manual-ru.html) — полный справочник на русском (карта меню, управление, настройки, serial-команды, опасно/безопасно по каждому разделу). Download and open it in a browser, or view raw on GitHub and save.
+
 ## What's different from upstream
 
 - **New board config** — `esp8266_deauther/A_config.h`, `ANYX_ESP8266_V3_OLED`: SSD1306 over bit-banged I2C on GPIO14 (SDA) / GPIO12 (SCL), flipped orientation, single button on GPIO0.

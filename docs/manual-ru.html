@@ -1,0 +1,636 @@
+<title>Полевой справочник Deauther</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+  :root{
+    --paper:#eef1ef;
+    --surface:#ffffff;
+    --surface-2:#e4e9e5;
+    --ink:#16231f;
+    --ink-soft:#4c5951;
+    --line:#c9d3cc;
+    --accent:#b5482f;
+    --accent-ink:#ffffff;
+    --accent-soft:#f3ddd4;
+    --accent2:#2f6f5e;
+    --accent2-soft:#dbe9e2;
+    --code-bg:#101915;
+    --code-fg:#cfe6da;
+    --code-accent:#7fd9ae;
+    --code-line:#28382f;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#0e1512; --surface:#172420; --surface-2:#1c2b25;
+      --ink:#e9efe9; --ink-soft:#9fb3a7; --line:#263a31;
+      --accent:#e2764f; --accent-ink:#1a0f0a; --accent-soft:#3a2019;
+      --accent2:#6ecdae; --accent2-soft:#173129;
+      --code-bg:#05100b; --code-fg:#bdead2; --code-accent:#8dfcc0; --code-line:#173026;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#0e1512; --surface:#172420; --surface-2:#1c2b25;
+    --ink:#e9efe9; --ink-soft:#9fb3a7; --line:#263a31;
+    --accent:#e2764f; --accent-ink:#1a0f0a; --accent-soft:#3a2019;
+    --accent2:#6ecdae; --accent2-soft:#173129;
+    --code-bg:#05100b; --code-fg:#bdead2; --code-accent:#8dfcc0; --code-line:#173026;
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    background:var(--paper); color:var(--ink);
+    font-family:'IBM Plex Sans', system-ui, sans-serif;
+    font-size:15.5px; line-height:1.62;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 28px 28px; background-position: -1px -1px;
+    background-attachment: local;
+  }
+  .wrap{max-width:920px;margin:0 auto;padding:28px 20px 80px;}
+  h1,h2,h3{font-family:'Big Shoulders Display', system-ui, sans-serif; text-wrap:balance; margin:0;}
+  code, .mono, table.spec td.val, .pill{font-family:'IBM Plex Mono', ui-monospace, monospace;}
+  a{color:var(--accent2);}
+
+  .plate{
+    background:var(--surface); border:1px solid var(--line); border-radius:4px;
+    padding:22px 24px; display:flex; justify-content:space-between; align-items:flex-end;
+    gap:24px; flex-wrap:wrap;
+  }
+  .plate .eyebrow{
+    font-family:'IBM Plex Mono'; font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--accent2); margin-bottom:6px;
+  }
+  .plate h1{font-size:clamp(30px,6vw,50px); font-weight:800; letter-spacing:.01em; line-height:.98;}
+  .plate .sub{color:var(--ink-soft); font-size:14px; margin-top:6px; max-width:48ch;}
+  table.spec{border-collapse:collapse; font-size:12.5px;}
+  table.spec td{padding:2px 0; vertical-align:top;}
+  table.spec td.key{color:var(--ink-soft); padding-right:12px; white-space:nowrap; text-transform:uppercase; letter-spacing:.06em; font-family:'IBM Plex Mono'; font-size:10.5px;}
+  table.spec td.val{font-weight:500; font-variant-numeric:tabular-nums;}
+
+  nav.toc{
+    display:flex; flex-wrap:wrap; gap:2px 18px; margin:14px 0 34px; padding:10px 2px;
+    border-bottom:1px solid var(--line); font-family:'IBM Plex Mono'; font-size:12px;
+  }
+  nav.toc a{color:var(--ink-soft); text-decoration:none;}
+  nav.toc a:hover{color:var(--accent2);}
+  nav.toc span.n{color:var(--line); margin-right:5px;}
+
+  section{margin:52px 0;}
+  .kicker{font-family:'IBM Plex Mono'; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-soft); margin-bottom:6px;}
+  h2{font-size:clamp(23px,4vw,31px); font-weight:700; margin-bottom:16px;}
+  section > p.lede{color:var(--ink-soft); max-width:66ch; margin-bottom:20px;}
+
+  .hazard{
+    display:flex; gap:16px; align-items:flex-start;
+    background:var(--accent-soft); border:1px solid var(--accent);
+    border-radius:3px; padding:16px 18px; position:relative; overflow:hidden;
+  }
+  .hazard::before{
+    content:""; position:absolute; inset:0 0 0 0; width:6px;
+    background:repeating-linear-gradient(45deg, var(--accent) 0 6px, var(--accent-soft) 6px 12px);
+  }
+  .hazard .tag{
+    font-family:'IBM Plex Mono'; font-weight:600; font-size:11px; letter-spacing:.1em;
+    color:var(--accent); border:1px solid var(--accent); border-radius:2px;
+    padding:2px 7px; white-space:nowrap; margin-left:10px;
+  }
+  .hazard p{margin:0; font-size:14px; color:var(--ink);}
+  .hazard p + p{margin-top:8px; color:var(--ink-soft); font-size:13px;}
+
+  ol.steps{list-style:none; margin:0; padding:0; display:grid; gap:0;}
+  ol.steps li{display:grid; grid-template-columns:40px 1fr; gap:16px; padding:14px 0; border-top:1px solid var(--line);}
+  ol.steps li:last-child{border-bottom:1px solid var(--line);}
+  ol.steps .num{font-family:'Big Shoulders Display'; font-weight:700; font-size:26px; color:var(--accent2); line-height:1.1;}
+  ol.steps .body b{display:block; font-size:14.5px; margin-bottom:2px;}
+  ol.steps .body span{color:var(--ink-soft); font-size:13.5px;}
+
+  figure{margin:0;}
+  figure svg{width:100%; height:auto; display:block; color:var(--ink-soft);}
+  figcaption{font-size:12.5px; color:var(--ink-soft); margin-top:10px; max-width:64ch;}
+  .diagram-frame{background:var(--surface); border:1px solid var(--line); border-radius:4px; padding:18px 10px;}
+
+  .modgrid{display:grid; gap:14px;}
+  .module{
+    background:var(--surface); border:1px solid var(--line); border-radius:4px;
+    padding:18px 20px 20px; display:grid; grid-template-columns:56px 1fr; gap:16px;
+  }
+  .module .icon{
+    width:56px; height:56px; border-radius:4px; display:flex; align-items:center; justify-content:center;
+    background:var(--surface-2); border:1px solid var(--line);
+  }
+  .module .icon svg{width:32px; height:32px;}
+  .module.danger .icon{background:var(--accent-soft); border-color:var(--accent);}
+  .module.danger .icon svg{color:var(--accent);}
+  .module.safe .icon svg{color:var(--accent2);}
+  .module h3{font-size:19px; font-weight:700; letter-spacing:.01em;}
+  .module .tagline{font-size:12px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.05em; margin-top:2px; font-family:'IBM Plex Mono';}
+  .module p{font-size:13.8px; margin:10px 0 0; color:var(--ink);}
+  .module .oled{
+    margin-top:12px; background:var(--code-bg); color:var(--code-fg); border-radius:3px;
+    padding:10px 13px; font-family:'IBM Plex Mono'; font-size:12px; line-height:1.7; overflow-x:auto;
+  }
+  .module .oled .rem{color:#7f9186;}
+  .module .oled .cmd{color:var(--code-accent);}
+
+  .btnrow{display:grid; grid-template-columns:repeat(4,1fr); gap:12px;}
+  .btncard{background:var(--surface); border:1px solid var(--line); border-radius:4px; padding:14px 14px 16px; text-align:center;}
+  .btncard .cap{
+    width:38px; height:38px; margin:0 auto 10px; border-radius:50%; background:var(--surface-2); border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center; font-family:'Big Shoulders Display'; font-weight:800; font-size:17px; color:var(--ink);
+  }
+  .btncard.action .cap{background:var(--accent2-soft); border-color:var(--accent2); color:var(--accent2);}
+  .btncard b{font-size:13px; display:block; margin-bottom:6px;}
+  .btncard span{font-size:12px; color:var(--ink-soft); display:block;}
+  .btncard span + span{margin-top:4px;}
+
+  .tablewrap{overflow-x:auto; border:1px solid var(--line); border-radius:4px;}
+  table.settings{border-collapse:collapse; width:100%; min-width:720px; font-size:13px;}
+  table.settings thead th{
+    text-align:left; font-family:'IBM Plex Mono'; font-size:10.5px; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--ink-soft); background:var(--surface-2); padding:9px 14px; border-bottom:1px solid var(--line);
+  }
+  table.settings td{padding:9px 14px; border-bottom:1px solid var(--line); vertical-align:top;}
+  table.settings tbody tr:last-child td{border-bottom:none;}
+  table.settings tbody tr:hover{background:var(--surface-2);}
+  table.settings td.key{font-family:'IBM Plex Mono'; font-size:12.5px; white-space:nowrap;}
+  table.settings td.def{font-family:'IBM Plex Mono'; font-size:12px; color:var(--ink-soft); white-space:nowrap;}
+  .pill{display:inline-block; font-size:10px; letter-spacing:.06em; font-weight:600; padding:2px 6px; border-radius:2px; margin-left:6px; vertical-align:1px;}
+  .pill.attack{background:var(--accent-soft); color:var(--accent); border:1px solid var(--accent);}
+  .groupbar{font-family:'IBM Plex Mono'; font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-soft); padding:14px 0 8px; margin-top:6px;}
+  .groupbar:first-child{padding-top:0;}
+
+  .cmdgrid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  .cmdgroup{background:var(--surface); border:1px solid var(--line); border-radius:4px; padding:14px 16px 16px;}
+  .cmdgroup h4{font-family:'Big Shoulders Display'; font-size:16px; font-weight:700; letter-spacing:.02em; margin:0 0 8px; color:var(--ink);}
+  .cmdgroup dl{margin:0;}
+  .cmdgroup dt{font-family:'IBM Plex Mono'; font-size:12px; color:var(--accent2); margin-top:8px;}
+  .cmdgroup dt:first-child{margin-top:0;}
+  .cmdgroup dd{margin:2px 0 0; font-size:12.5px; color:var(--ink-soft);}
+
+  .note{
+    margin-top:14px; font-size:12.5px; color:var(--ink-soft);
+    border-left:2px solid var(--line); padding-left:12px;
+  }
+
+  .risk{
+    display:flex; align-items:flex-start; gap:8px; margin-top:10px;
+    font-size:12.5px; padding:7px 10px; border-radius:3px;
+  }
+  .risk.ok{background:var(--accent2-soft); color:var(--accent2);}
+  .risk.warn{background:var(--accent-soft); color:var(--accent);}
+  .risk b{font-family:'IBM Plex Mono'; font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; flex-shrink:0;}
+  .risk span{color:var(--ink);}
+
+  .glossary{overflow-x:auto; border:1px solid var(--line); border-radius:4px; margin-bottom:24px;}
+  table.gloss{border-collapse:collapse; width:100%; min-width:520px; font-size:12.5px;}
+  table.gloss thead th{
+    text-align:left; font-family:'IBM Plex Mono'; font-size:10.5px; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--ink-soft); background:var(--surface-2); padding:8px 12px; border-bottom:1px solid var(--line);
+  }
+  table.gloss td{padding:7px 12px; border-bottom:1px solid var(--line); vertical-align:top;}
+  table.gloss tbody tr:last-child td{border-bottom:none;}
+  table.gloss td.en{font-family:'IBM Plex Mono'; font-size:12px; white-space:nowrap;}
+
+  footer{
+    margin-top:60px; padding-top:20px; border-top:1px solid var(--line);
+    font-size:12px; color:var(--ink-soft); font-family:'IBM Plex Mono';
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;
+  }
+
+  @media (max-width:640px){
+    .module{grid-template-columns:44px 1fr;}
+    .btnrow{grid-template-columns:repeat(2,1fr);}
+    .cmdgrid{grid-template-columns:1fr;}
+  }
+</style>
+
+<div class="wrap">
+
+  <div class="plate">
+    <div>
+      <div class="eyebrow">Справка по прошивке &middot; ваша плата</div>
+      <h1>Полевой<br>справочник<br>Deauther</h1>
+      <div class="sub">esp8266_deauther v2.6.1 (SpacehuhnTech), сборка под OLED, на вашей плате ESP8266 V3.</div>
+    </div>
+    <table class="spec">
+      <tr><td class="key">Чип</td><td class="val">ESP8266EX &middot; 160&nbsp;МГц</td></tr>
+      <tr><td class="key">Флеш</td><td class="val">4&nbsp;МБ (mfr 5E dev 4016)</td></tr>
+      <tr><td class="key">MAC</td><td class="val">8C:4F:00:58:2D:3D</td></tr>
+      <tr><td class="key">UART</td><td class="val">CH340 &middot; COM3 &middot; 115200 8N1</td></tr>
+      <tr><td class="key">Сборка</td><td class="val">ANYX_ESP8266_V3_OLED</td></tr>
+      <tr><td class="key">Экран</td><td class="val">SSD1306, SDA=14 SCL=12</td></tr>
+      <tr><td class="key">Кнопка</td><td class="val">GPIO0 (одна)</td></tr>
+      <tr><td class="key">Прошито</td><td class="val">08.09.2026</td></tr>
+    </table>
+  </div>
+
+  <nav class="toc">
+    <a href="#start"><span class="n">01</span>Быстрый старт</a>
+    <a href="#map"><span class="n">02</span>Карта меню</a>
+    <a href="#controls"><span class="n">03</span>Кнопки</a>
+    <a href="#modules"><span class="n">04</span>Разделы</a>
+    <a href="#settings"><span class="n">05</span>Настройки</a>
+    <a href="#serial"><span class="n">06</span>Serial-команды</a>
+    <a href="#rollback"><span class="n">07</span>Откат</a>
+  </nav>
+
+  <section id="legal" style="margin-top:0;">
+    <div class="hazard">
+      <div style="flex:1;">
+        <p><b>Только для авторизованного тестирования.</b> Эта прошивка отправляет кадры деаутентификации и beacon&#8209;фреймы &mdash; это техника отказа в обслуживании (DoS) против сетей 802.11. Используйте её только против собственных сетей и устройств либо с письменным разрешением владельца, и заранее проверьте требования законодательства вашей страны к радиопередаче на 2.4&nbsp;ГГц.</p>
+        <p>Экспериментальная прошивка поверх SDK ESP8266, не предназначенного для этой задачи &mdash; возможны баги.</p>
+      </div>
+      <div class="tag">RF &middot; TX</div>
+    </div>
+  </section>
+
+  <section id="start">
+    <div class="kicker">01 &middot; Первое включение</div>
+    <h2>Быстрый старт</h2>
+    <ol class="steps">
+      <li>
+        <div class="num">1</div>
+        <div class="body"><b>Подайте питание</b><span>Подключите по USB. OLED 0.96&Prime; покажет заставку, затем перейдёт в главное меню &mdash; см. &sect;02.</span></div>
+      </li>
+      <li>
+        <div class="num">2</div>
+        <div class="body"><b>Подключитесь к точке настройки</b><span>Сеть Wi&#8209;Fi <code>pwned</code>, пароль <code>deauther</code>, адрес <code>192.168.4.1</code> в браузере. Смените оба значения в &sect;05 прежде чем делать что&#8209;либо ещё &mdash; это заводские настройки, известные всем.</span></div>
+      </li>
+      <li>
+        <div class="num">3</div>
+        <div class="body"><b>Или без экрана &mdash; через serial</b><span>Откройте монитор порта на COM3, 115200 бод, и введите <code>help</code>. Каждому пункту экранного меню в этом справочнике соответствует команда из &sect;06.</span></div>
+      </li>
+      <li>
+        <div class="num">4</div>
+        <div class="body"><b>Навигация по экрану</b><span>Тап листает пункты меню, удержание (&ge;800&nbsp;мс) открывает выбранный &mdash; на этой плате всего одна кнопка, полная схема жестов в &sect;03.</span></div>
+      </li>
+    </ol>
+    <p class="note">На этой сборке в SPIFFS уже лежит <code>autostart.txt</code>, который при каждой загрузке сам запускает демонстрационное сканирование точек и клиентов &mdash; это штатное поведение прошивки DSTIKE, не баг.</p>
+  </section>
+
+  <section id="map">
+    <div class="kicker">02 &middot; Экранное меню</div>
+    <h2>Карта меню</h2>
+    <p class="lede">То, что реально показывает OLED, восстановлено из <code>DisplayUI.cpp</code>. Зелёные ветки только читают состояние; медная &mdash; передаёт в эфир.</p>
+    <div class="diagram-frame">
+      <figure>
+        <svg viewBox="0 0 900 470" role="img" aria-label="Дерево меню: Главное меню разветвляется на Scan, Select, Attack, Packet Monitor, Clock и LED. Scan раскрывается в Scan AP+ST, Scan AP, Scan ST. Select раскрывается в Access Points, Stations, Names, SSIDs. Attack, выделенный предупреждающим цветом как передающий в эфир, раскрывается в Deauth, Beacon, Probe и Start.">
+          <defs>
+            <marker id="arr-ru" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+            </marker>
+          </defs>
+
+          <rect x="330" y="14" width="240" height="46" rx="3" fill="none" stroke="currentColor"/>
+          <text x="450" y="42" text-anchor="middle" font-family="IBM Plex Mono" font-size="13" fill="currentColor">ГЛАВНОЕ МЕНЮ</text>
+
+          <line x1="450" y1="60" x2="450" y2="86" stroke="currentColor"/>
+          <line x1="90" y1="86" x2="810" y2="86" stroke="currentColor"/>
+
+          <g font-family="IBM Plex Mono" font-size="11.5" text-anchor="middle">
+            <line x1="90" y1="86" x2="90" y2="100" stroke="currentColor" marker-end="url(#arr-ru)"/>
+            <rect x="30" y="100" width="120" height="40" rx="3" fill="none" stroke="var(--accent2)"/>
+            <text x="90" y="125" fill="var(--accent2)">SCAN</text>
+
+            <line x1="234" y1="86" x2="234" y2="100" stroke="currentColor" marker-end="url(#arr-ru)"/>
+            <rect x="174" y="100" width="120" height="40" rx="3" fill="none" stroke="var(--accent2)"/>
+            <text x="234" y="125" fill="var(--accent2)">SELECT</text>
+
+            <line x1="378" y1="86" x2="378" y2="100" stroke="currentColor" marker-end="url(#arr-ru)"/>
+            <rect x="318" y="100" width="120" height="40" rx="3" fill="none" stroke="var(--accent)"/>
+            <text x="378" y="125" fill="var(--accent)">ATTACK</text>
+
+            <line x1="522" y1="86" x2="522" y2="100" stroke="currentColor" marker-end="url(#arr-ru)"/>
+            <rect x="462" y="100" width="120" height="40" rx="3" fill="none" stroke="currentColor"/>
+            <text x="522" y="121" fill="currentColor">PACKET</text>
+            <text x="522" y="133" fill="currentColor">MONITOR</text>
+
+            <line x1="666" y1="86" x2="666" y2="100" stroke="currentColor" marker-end="url(#arr-ru)"/>
+            <rect x="606" y="100" width="120" height="40" rx="3" fill="none" stroke="currentColor"/>
+            <text x="666" y="125" fill="currentColor">CLOCK</text>
+
+            <line x1="810" y1="86" x2="810" y2="100" stroke="currentColor" marker-end="url(#arr-ru)"/>
+            <rect x="750" y="100" width="120" height="40" rx="3" fill="none" stroke="currentColor"/>
+            <text x="810" y="125" fill="currentColor">LED</text>
+          </g>
+
+          <line x1="90" y1="140" x2="90" y2="160" stroke="var(--accent2)"/>
+          <rect x="20" y="160" width="140" height="80" rx="3" fill="none" stroke="var(--accent2)" stroke-dasharray="3 3"/>
+          <g font-family="IBM Plex Mono" font-size="10.5" fill="var(--accent2)">
+            <text x="32" y="180">AP + Station</text>
+            <text x="32" y="200">Access Points</text>
+            <text x="32" y="220">Stations</text>
+          </g>
+
+          <line x1="234" y1="140" x2="234" y2="160" stroke="var(--accent2)"/>
+          <rect x="164" y="160" width="140" height="100" rx="3" fill="none" stroke="var(--accent2)" stroke-dasharray="3 3"/>
+          <g font-family="IBM Plex Mono" font-size="10.5" fill="var(--accent2)">
+            <text x="176" y="180">Access Points</text>
+            <text x="176" y="200">Stations</text>
+            <text x="176" y="220">Names</text>
+            <text x="176" y="240">SSIDs</text>
+          </g>
+
+          <line x1="378" y1="140" x2="378" y2="160" stroke="var(--accent)"/>
+          <rect x="308" y="160" width="140" height="100" rx="3" fill="none" stroke="var(--accent)" stroke-dasharray="3 3"/>
+          <g font-family="IBM Plex Mono" font-size="10.5" fill="var(--accent)">
+            <text x="320" y="180">Deauth &#9679; вкл/выкл</text>
+            <text x="320" y="200">Beacon &#9679; вкл/выкл</text>
+            <text x="320" y="220">Probe &#9679; вкл/выкл</text>
+            <text x="320" y="240">START &#8594; передача</text>
+          </g>
+
+          <text x="522" y="160" text-anchor="middle" font-family="IBM Plex Sans" font-size="10.5" fill="var(--ink-soft)">график pkt/s в реальном времени</text>
+          <text x="666" y="160" text-anchor="middle" font-family="IBM Plex Sans" font-size="10.5" fill="var(--ink-soft)">показать / настроить время</text>
+          <text x="810" y="160" text-anchor="middle" font-family="IBM Plex Sans" font-size="10.5" fill="var(--ink-soft)">цвет статуса</text>
+
+          <g font-family="IBM Plex Mono" font-size="11">
+            <rect x="20" y="420" width="14" height="10" fill="none" stroke="var(--accent2)"/>
+            <text x="40" y="429" fill="var(--ink-soft)">чтение / настройка &mdash; без передачи в эфир</text>
+            <rect x="20" y="444" width="14" height="10" fill="none" stroke="var(--accent)"/>
+            <text x="40" y="453" fill="var(--ink-soft)">отправляет кадры 802.11 при запуске</text>
+          </g>
+        </svg>
+        <figcaption>Все экраны, до которых можно дойти с OLED, на один&#8209;два уровня вглубь от главного меню. Отдельной кнопки «назад» на этой плате нет &mdash; вместо неё в конце каждого подменю есть выбираемый пункт <b>[BACK]</b>: удержание на нём поднимает на уровень выше, тем же жестом, что и везде.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section id="controls">
+    <div class="kicker">03 &middot; Физическое управление</div>
+    <h2>Одна кнопка, два жеста</h2>
+    <p class="lede">Штатная прошивка Deauther рассчитана на четыре кнопки (UP/DOWN/A/B). На этой плате кнопка одна &mdash; FLASH на GPIO0, &mdash; поэтому в <code>DisplayUI.cpp</code> навигацию и выбор свели к одному жесту тап/удержание вместо перепайки платы.</p>
+    <div class="btnrow" style="grid-template-columns:repeat(2,1fr);">
+      <div class="btncard action"><div class="cap">TAP</div><b>Следующий пункт</b><span>Двигает выделение по текущему списку по кругу &mdash; то, что раньше делали UP/DOWN.</span></div>
+      <div class="btncard"><div class="cap">HOLD</div><b>Выбор (&ge;800&nbsp;мс)</b><span>Открывает выделенный пункт &mdash; то, что раньше делала A. Долистайте до пункта <b>[BACK]</b> в конце списка и удержите &mdash; выход на уровень выше тем же жестом.</span></div>
+    </div>
+    <p class="note" style="margin-top:14px; font-size:12.5px; color:var(--ink-soft); border-left:2px solid var(--line); padding-left:12px;">Компромисс: при одной паре жестов не осталось свободного жеста под старые контекстные действия кнопки A (долгое нажатие для переименования/удаления записи в Select) &mdash; они с экрана недоступны, используйте вместо них команды <code>set name</code> / <code>remove</code> из &sect;06.</p>
+  </section>
+
+  <section id="modules">
+    <div class="kicker">04 &middot; Справочник по функциям</div>
+    <h2>Разделы меню</h2>
+    <p class="lede">На экране всё подписано по&#8209;английски (родной язык прошивки) &mdash; вот что означает каждое слово, куда ведёт нажатие и почему это опасно или безопасно.</p>
+
+    <div class="glossary">
+      <table class="gloss">
+        <thead><tr><th>На экране</th><th>Перевод</th><th>Что это</th></tr></thead>
+        <tbody>
+          <tr><td class="en">SCAN</td><td>Сканирование</td><td>Поиск сетей/устройств в эфире</td></tr>
+          <tr><td class="en">SELECT</td><td>Выбор</td><td>Список найденного + отметка целей. На экране называется SELECT, а не SHOW &mdash; так на английском проще, но команда в serial всё равно <code>show</code>/<code>select</code>.</td></tr>
+          <tr><td class="en">ATTACK</td><td>Атака</td><td>Раздел передачи в эфир</td></tr>
+          <tr><td class="en">DEAUTH</td><td>Деаутентификация</td><td>Отключить устройство от его сети</td></tr>
+          <tr><td class="en">BEACON</td><td>Маячок / объявление сети</td><td>Разослать поддельное имя сети</td></tr>
+          <tr><td class="en">PROBE</td><td>Зонд-запрос</td><td>Кадр «а есть тут сеть с именем X?»</td></tr>
+          <tr><td class="en">START / STOP</td><td>Старт / Стоп</td><td>Запустить или остановить атаку</td></tr>
+          <tr><td class="en">PACKET MONITOR</td><td>Монитор пакетов</td><td>Живой график активности эфира</td></tr>
+          <tr><td class="en">CLOCK</td><td>Часы</td><td>Просто часы на экране</td></tr>
+          <tr><td class="en">LED</td><td>Индикатор</td><td>Цвет светодиода-статуса</td></tr>
+          <tr><td class="en">SSIDs</td><td>Имена сетей</td><td>Список поддельных имён для BEACON/PROBE</td></tr>
+          <tr><td class="en">RANDOM ROUTERS</td><td>Случайные роутеры</td><td>Создаёт 80 имён-роутеров и сразу транслирует их (Beacon)</td></tr>
+          <tr><td class="en">[BACK]</td><td>[Назад]</td><td>Пункт-выход на уровень выше</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="modgrid">
+
+      <div class="module safe">
+        <div class="icon" data-icon="scan"></div>
+        <div>
+          <h3>Scan &mdash; Сканирование</h3>
+          <div class="tagline">Пассивно &middot; только слушает</div>
+          <p>Проходит по каналам 2.4&nbsp;ГГц в поисках точек доступа и/или клиентских устройств (станций), с ними связанных. Результаты питают все остальные разделы &mdash; цели выбираются здесь до запуска Select или Attack.</p>
+          <div class="risk ok"><b>Безопасно</b><span>Только приём эфира, плата ничего не передаёт &mdash; на окружающих повлиять не может в принципе.</span></div>
+          <div class="oled"><span class="rem">// эквиваленты в serial</span><br><span class="cmd">scan</span> aps -t 15<br><span class="cmd">scan</span> stations -ch 6<br><span class="cmd">scan</span> wifi -t 0</div>
+        </div>
+      </div>
+
+      <div class="module safe">
+        <div class="icon" data-icon="show"></div>
+        <div>
+          <h3>Select &mdash; Выбор <span style="font-size:11px; color:var(--ink-soft); font-weight:400;">(на экране SELECT, команда в serial &mdash; show)</span></h3>
+          <div class="tagline">Пассивно &middot; просмотр результатов</div>
+          <p>Список того, что нашло последнее сканирование &mdash; точки доступа, станции, сохранённые имена устройств, сохранённые SSID. Удержание на пункте &mdash; выбрать/снять выбор.</p>
+          <div class="risk ok"><b>Безопасно</b><span>Просмотр уже собранных данных на самом устройстве &mdash; ничего не передаётся в эфир.</span></div>
+          <div class="oled"><span class="rem">// эквиваленты в serial</span><br><span class="cmd">show</span> aps<br><span class="cmd">select</span> ap 2<br><span class="cmd">remove</span> ap 2</div>
+        </div>
+      </div>
+
+      <div class="module danger">
+        <div class="icon" data-icon="attack"></div>
+        <div>
+          <h3>Attack &mdash; Атака</h3>
+          <div class="tagline">Передаёт в эфир &middot; нужна авторизация</div>
+          <p>Включите Deauth, Beacon и/или Probe, затем START. Deauth отключает выбранные станции от их точки доступа; Beacon/Probe анонсируют поддельные SSID из вашего списка, сбивая с толку сканеры поблизости. Одновременно работает только Deauth либо Deauth&#8209;all.</p>
+          <div class="risk warn"><b>Опасно</b><span>Реальная передача 802.11-кадров: заденет любую сеть/устройство в радиусе действия на выбранном канале, не только ваши. Запускать только когда точно известно, что чужих сетей рядом нет.</span></div>
+          <div class="oled"><span class="rem">// эквиваленты в serial</span><br><span class="cmd">attack</span> deauth -t 60<br><span class="cmd">attack</span> beacon probe<br><span class="cmd">stop</span> attack</div>
+        </div>
+      </div>
+
+      <div class="module safe">
+        <div class="icon" data-icon="monitor"></div>
+        <div>
+          <h3>Packet Monitor &mdash; Монитор пакетов</h3>
+          <div class="tagline">Пассивно &middot; проверка результата</div>
+          <p>Живой столбчатый график пакетов в секунду на активном канале, пока идёт <code>scan wifi</code>. Способ убедиться, что атака действительно работает, без ноутбука и Wireshark под рукой.</p>
+          <div class="risk ok"><b>Безопасно</b><span>Тоже только приём &mdash; график считает чужие пакеты, но плата сама ничего не шлёт.</span></div>
+          <div class="oled"><span class="rem">// эквиваленты в serial</span><br><span class="cmd">scan</span> wifi -ch 6<br><span class="cmd">draw</span> 25 2</div>
+        </div>
+      </div>
+
+      <div class="module">
+        <div class="icon" data-icon="clock"></div>
+        <div>
+          <h3>Clock &mdash; Часы</h3>
+          <div class="tagline">Косметика</div>
+          <p>Превращает OLED в обычные цифровые часы &mdash; два экрана, «Показать» и «Установить время». В основном используется, чтобы устройство выглядело безобидно, пока лежит на столе между тестами.</p>
+          <div class="risk ok"><b>Безопасно</b><span>Чистая косметика, радио вообще не задействовано.</span></div>
+          <div class="oled"><span class="rem">// без serial-эквивалента &mdash; только экран</span></div>
+        </div>
+      </div>
+
+      <div class="module">
+        <div class="icon" data-icon="led"></div>
+        <div>
+          <h3>LED &mdash; Индикатор</h3>
+          <div class="tagline">Статусный индикатор</div>
+          <p>Управляет встроенным RGB&#8209;светодиодом (если он есть) &mdash; цвет меняется автоматически при сканировании или атаке, либо задаётся вручную с отключением автообновления.</p>
+          <div class="risk ok"><b>Безопасно</b><span>Просто цвет светодиода, на эфир не влияет.</span></div>
+          <div class="oled"><span class="rem">// эквиваленты в serial</span><br><span class="cmd">led</span> #ff2d00 200<br><span class="cmd">set</span> ledEnabled false</div>
+        </div>
+      </div>
+
+      <div class="module danger">
+        <div class="icon" data-icon="routers"></div>
+        <div>
+          <h3>Random Routers &mdash; Случайные роутеры</h3>
+          <div class="tagline">Select &rarr; SSIDs &rarr; RANDOM ROUTERS &middot; передаёт сразу</div>
+          <p>Наш собственный пункт (его нет в оригинальной прошивке). Одним нажатием: генерирует 80 имён в стиле заводских названий роутеров (<code>TP-Link_4F2A</code>, <code>Keenetic_C019</code> и т.п.) и <b>сразу запускает Beacon-атаку</b> с ними &mdash; отдельно заходить в Attack не нужно, экран сам переключится туда и покажет счётчик пакетов.</p>
+          <div class="risk warn"><b>Опасно</b><span>С этой правкой пункт больше не «просто список» &mdash; он реально передаёт ~500 beacon-кадров/сек в эфир, как только вы его открыли. Все устройства в радиусе действия увидят все 80 сетей в своих WiFi-сканерах. Подключиться к ним по&#8209;прежнему нельзя (это не настоящие точки доступа, ввести пароль некуда), но сам факт передачи &mdash; это уже как в разделе Attack: только когда точно известно, что рядом нет чужих сетей и устройств.</span></div>
+          <div class="oled"><span class="rem">// путь в меню / serial</span><br>Select &rarr; SSIDs &rarr; RANDOM ROUTERS (удержание)<br><span class="cmd">add</span> ssid routers 80<br><span class="cmd">attack</span> beacon</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section id="settings">
+    <div class="kicker">05 &middot; Конфигурация</div>
+    <h2>Настройки</h2>
+    <p class="lede">Читаются командой <code>get &lt;настройка&gt;</code>, меняются <code>set &lt;настройка&gt; &lt;значение&gt;</code>, сохраняются в SPIFFS через <code>save settings</code>. Строки с меткой <span class="pill attack">ATTACK</span> определяют агрессивность атаки.</p>
+    <div class="tablewrap">
+      <table class="settings">
+        <thead><tr><th>Настройка</th><th>По умолч.</th><th>Что делает</th></tr></thead>
+        <tbody>
+          <tr><td colspan="3" class="groupbar">Точка доступа и идентификация</td></tr>
+          <tr><td class="key">ssid</td><td class="def">"pwned"</td><td>Имя Wi&#8209;Fi сети настройки (1&ndash;31 символ).</td></tr>
+          <tr><td class="key">password</td><td class="def">"deauther"</td><td>Пароль этой сети (8&ndash;31 символ). Смените в первую очередь.</td></tr>
+          <tr><td class="key">channel</td><td class="def">1</td><td>Канал Wi&#8209;Fi при запуске.</td></tr>
+          <tr><td class="key">hidden</td><td class="def">false</td><td>Скрывает SSID точки настройки.</td></tr>
+          <tr><td class="key">captivePortal</td><td class="def">true</td><td>Перенаправляет подключившихся клиентов прямо в веб&#8209;интерфейс.</td></tr>
+          <tr><td class="key">macAP / macSt</td><td class="def">&mdash;</td><td>Свой MAC для режима AP / станции; принимает значение <code>random</code>.</td></tr>
+
+          <tr><td colspan="3" class="groupbar">Интерфейсы</td></tr>
+          <tr><td class="key">displayInterface</td><td class="def">false</td><td>Включает меню на OLED. <b>По умолчанию выключено</b> &mdash; экран не заработает, пока не включить.</td></tr>
+          <tr><td class="key">displayTimeout</td><td class="def">600с</td><td>Экран гаснет после стольких секунд бездействия; 0 &mdash; не гаснет.</td></tr>
+          <tr><td class="key">serialInterface</td><td class="def">true</td><td>Включает консоль команд из &sect;06.</td></tr>
+          <tr><td class="key">serialEcho</td><td class="def">true</td><td>Дублирует каждую входящую serial-команду обратно в порт.</td></tr>
+          <tr><td class="key">webInterface</td><td class="def">false</td><td>Включает веб-интерфейс в браузере.</td></tr>
+          <tr><td class="key">webSpiffs</td><td class="def">false</td><td>Отдаёт файлы веб-интерфейса прямо из флеша &mdash; медленнее, зато можно править без перепрошивки.</td></tr>
+          <tr><td class="key">ledEnabled</td><td class="def">true</td><td>Общий выключатель статусного светодиода.</td></tr>
+          <tr><td class="key">lang</td><td class="def">"en"</td><td>Файл языка для веб-интерфейса.</td></tr>
+
+          <tr><td colspan="3" class="groupbar">Сканирование</td></tr>
+          <tr><td class="key">maxCh</td><td class="def">13</td><td>Верхний сканируемый канал &mdash; 11 (США), 13 (ЕС), 14 (Япония).</td></tr>
+          <tr><td class="key">chTime</td><td class="def">384мс</td><td>Время на канал при переборе.</td></tr>
+
+          <tr><td colspan="3" class="groupbar">Настройка атаки</td></tr>
+          <tr><td class="key">minDeauths <span class="pill attack">ATTACK</span></td><td class="def">3</td><td>Сколько deauth-кадров нужно, чтобы LED пометил «под атакой» во время сканирования.</td></tr>
+          <tr><td class="key">attackTimeout <span class="pill attack">ATTACK</span></td><td class="def">600с</td><td>Автоостановка атаки; 0 &mdash; работает, пока не остановят вручную.</td></tr>
+          <tr><td class="key">deauthsPerTarget <span class="pill attack">ATTACK</span></td><td class="def">10</td><td>Кадров deauth + disassociate на каждую выбранную цель.</td></tr>
+          <tr><td class="key">deauthReason <span class="pill attack">ATTACK</span></td><td class="def">1</td><td>Код причины 802.11, прикладываемый к каждому deauth-кадру.</td></tr>
+          <tr><td class="key">beaconChannel <span class="pill attack">ATTACK</span></td><td class="def">false</td><td>Рассылает beacon/probe по разным каналам вместо одного.</td></tr>
+          <tr><td class="key">beaconInterval <span class="pill attack">ATTACK</span></td><td class="def">false</td><td>true = 1 маяк/сек (незаметнее); false = каждые 100мс (быстрее виден в сканере).</td></tr>
+          <tr><td class="key">randomTX <span class="pill attack">ATTACK</span></td><td class="def">false</td><td>Случайная мощность передачи для beacon/probe.</td></tr>
+          <tr><td class="key">probesPerSSID <span class="pill attack">ATTACK</span></td><td class="def">1</td><td>Кадров probe request на каждый поддельный SSID.</td></tr>
+
+          <tr><td colspan="3" class="groupbar">Хранилище</td></tr>
+          <tr><td class="key">autosave</td><td class="def">true</td><td>Периодически сохраняет SSID, имена и настройки в SPIFFS.</td></tr>
+          <tr><td class="key">autosaveTime</td><td class="def">30000мс</td><td>Интервал автосохранения выше.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="serial">
+    <div class="kicker">06 &middot; Serial-консоль</div>
+    <h2>Справочник команд</h2>
+    <p class="lede">115200 бод на COM3. Команда <code>help</code> на самом устройстве покажет живой список &mdash; здесь те же команды сгруппированы по назначению.</p>
+    <div class="cmdgrid">
+      <div class="cmdgroup">
+        <h4>Разведка</h4>
+        <dl>
+          <dt>scan [aps/stations/wifi] [-t с] [-ch n]</dt><dd>Запустить сканирование; режим "wifi" также питает монитор пакетов.</dd>
+          <dt>show [selected] [aps/stations/names/ssids]</dt><dd>Показать результаты сканирования или сохранённые списки.</dd>
+          <dt>select / deselect [тип] [id]</dt><dd>Отметить цели для следующей атаки.</dd>
+        </dl>
+      </div>
+      <div class="cmdgroup">
+        <h4>Списки целей</h4>
+        <dl>
+          <dt>add ssid &lt;имя&gt; [-wpa2] [-cl n]</dt><dd>Добавить поддельный SSID в очередь beacon/probe.</dd>
+          <dt>add name &lt;имя&gt; -ap/-st &lt;id&gt;</dt><dd>Сохранить найденное устройство под понятным именем.</dd>
+          <dt>remove &lt;ap/station/name/ssid&gt; &lt;id&gt;</dt><dd>Удалить одну запись или все записи типа.</dd>
+        </dl>
+      </div>
+      <div class="cmdgroup">
+        <h4>Атака и одиночные кадры</h4>
+        <dl>
+          <dt>attack [deauth/deauthall/beacon/probe] [-t с]</dt><dd>Запустить включённые типы атаки.</dd>
+          <dt>attack status [on/off]</dt><dd>Пакеты в секунду в реальном времени во время атаки.</dd>
+          <dt>send deauth/beacon/probe &hellip;</dt><dd>Отправить один вручную собранный кадр.</dd>
+          <dt>stop [scan/attack]</dt><dd>Остановить то, что выполняется.</dd>
+        </dl>
+      </div>
+      <div class="cmdgroup">
+        <h4>Файлы (SPIFFS)</h4>
+        <dl>
+          <dt>load / save [ssids/names/settings] [файл]</dt><dd>Сохранить состояние на флеш.</dd>
+          <dt>print / delete / replace &lt;файл&gt;</dt><dd>Редактировать строки файла из консоли.</dd>
+          <dt>format</dt><dd>Полностью очистить файловую систему.</dd>
+        </dl>
+      </div>
+      <div class="cmdgroup">
+        <h4>Система</h4>
+        <dl>
+          <dt>sysinfo</dt><dd>ОЗУ, канал, MAC-адреса, использование SPIFFS.</dd>
+          <dt>get / set &lt;настройка&gt; &lt;значение&gt;</dt><dd>Прочитать или изменить любую настройку из &sect;05.</dd>
+          <dt>reboot / reset</dt><dd>Жёсткая перезагрузка либо сброс настроек по умолчанию.</dd>
+        </dl>
+      </div>
+      <div class="cmdgroup">
+        <h4>Автоматизация и разное</h4>
+        <dl>
+          <dt>run &lt;файл&gt; [-c с]</dt><dd>Повторить сохранённый скрипт, при желании по циклу.</dd>
+          <dt>write &lt;файл&gt; &lt;команда&gt;</dt><dd>Добавить одну команду в файл-скрипт.</dd>
+          <dt>screen mode &lt;menu/packetmonitor&gt;</dt><dd>Принудительно переключить текущий экран OLED.</dd>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <section id="rollback">
+    <div class="kicker">07 &middot; Путь назад</div>
+    <h2>Откат прошивки</h2>
+    <p class="lede">Точный заводской образ, снятый с этой платы до перепрошивки &mdash; полное чтение 4&nbsp;МБ, а не повторная загрузка откуда-то.</p>
+    <div class="module" style="grid-template-columns:1fr;">
+      <div class="oled" style="margin-top:0;">
+        <span class="rem"># восстанавливает исходную прошивку "WiFi PRO v6.3"</span><br>
+        python -m esptool --port COM3 write-flash 0x0 deauther_backup_20260908.bin
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>esp8266_deauther v2.6.1 &middot; SpacehuhnTech, GPL&#8209;3.0</span>
+    <span>MAC 8C:4F:00:58:2D:3D &middot; резервная копия: deauther_backup_20260908.bin</span>
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  var bitmaps = {
+    scan:   ["00111000","01000100","10000010","10000010","10000010","01000110","00110001","00001110"],
+    show:   ["00011000","00111100","01100110","11000011","11000011","01100110","00111100","00011000"],
+    attack: ["00011100","00011000","00110000","01111110","00001100","00011000","00110000","01100000"],
+    monitor:["10001000","10001000","10101000","10101010","10101010","10101010","10101010","10101010"],
+    clock:  ["00111100","01000010","10011010","10011010","10000010","10000010","01000010","00111100"],
+    led:    ["00111000","01111100","01111100","01111100","00111000","00111000","00010000","00111000"],
+    routers:["01000010","01000010","00000000","01111110","01000010","01011010","01000010","01111110"]
+  };
+  var cell = 4;
+  document.querySelectorAll('[data-icon]').forEach(function(el){
+    var grid = bitmaps[el.getAttribute('data-icon')];
+    if(!grid) return;
+    var ns = 'http://www.w3.org/2000/svg';
+    var svg = document.createElementNS(ns,'svg');
+    svg.setAttribute('viewBox','0 0 32 32');
+    for(var r=0;r<8;r++){
+      for(var c=0;c<8;c++){
+        if(grid[r][c] === '1'){
+          var rect = document.createElementNS(ns,'rect');
+          rect.setAttribute('x', c*cell);
+          rect.setAttribute('y', r*cell);
+          rect.setAttribute('width', cell);
+          rect.setAttribute('height', cell);
+          rect.setAttribute('fill', 'currentColor');
+          svg.appendChild(rect);
+        }
+      }
+    }
+    el.appendChild(svg);
+  });
+})();
+</script>

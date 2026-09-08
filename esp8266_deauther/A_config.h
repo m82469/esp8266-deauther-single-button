@@ -385,6 +385,7 @@
 // ===== DISPLAY ===== //
   #define SSD1306_I2C
   #define FLIP_DIPLAY true
+  #define DISPLAY_TEXT "github.com/m82469"
 
   #define I2C_ADDR 0x3C
   #define I2C_SDA 14 // OLED SDA
