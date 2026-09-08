@@ -45,6 +45,7 @@ class SSIDs {
         void enableRandom(uint32_t randomInterval);
         void disableRandom();
         bool getRandom();
+        void addRandomRouterNames(int amount);
 
         String getName(int num);
         bool getWPA2(int num);

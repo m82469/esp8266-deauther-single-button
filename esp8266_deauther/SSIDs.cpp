@@ -229,6 +229,38 @@ bool SSIDs::getRandom() {
     return randomMode;
 }
 
+// Adds up to `amount` beacon-only decoy SSIDs styled like common router
+// defaults (e.g. "TP-Link_4F2A"). Cosmetic WPA2 flag only — these aren't
+// backed by a real access point, so nothing can actually associate or
+// hand over a password. Stays within SSID_LIST_SIZE like any other add().
+void SSIDs::addRandomRouterNames(int amount) {
+    const char* prefixes[] = {
+        "TP-Link", "Keenetic", "ASUS", "NETGEAR", "D-Link", "Xiaomi", "MERCUSYS", "Zyxel"
+    };
+    const int prefixCount = sizeof(prefixes) / sizeof(prefixes[0]);
+
+    int room = SSID_LIST_SIZE - list->size();
+
+    if (amount > room) amount = room;
+
+    for (int i = 0; i < amount; i++) {
+        String suffix;
+
+        for (int j = 0; j < 4; j++) {
+            int r = random(0, 16);
+            suffix += (r < 10) ? char('0' + r) : char('A' + (r - 10));
+        }
+
+        String name = String(prefixes[random(0, prefixCount)]) + "_" + suffix;
+
+        internal_add(name, true, name.length());
+    }
+
+    prnt(SS_ADDED);
+    prntln(String(amount));
+    changed = true;
+}
+
 void SSIDs::replace(int num, String name, bool wpa2) {
     if (!check(num)) return;
 

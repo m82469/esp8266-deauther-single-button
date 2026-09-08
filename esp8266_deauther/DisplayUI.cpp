@@ -232,6 +232,11 @@ void DisplayUI::setup() {
             else ssids.enableRandom(10);
             changeMenu(&ssidListMenu);
         });
+        addMenuNode(&ssidListMenu, D_RANDOM_ROUTERS, [this]() { // RANDOM ROUTERS
+            ssids.addRandomRouterNames(20);
+            changeMenu(&ssidListMenu);
+            ssids.save(false);
+        });
 
         // add ssids to list
         int c = ssids.count();

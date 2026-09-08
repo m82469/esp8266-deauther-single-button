@@ -1,38 +1,36 @@
-# ESP8266 Deauther
+# ESP8266 Deauther — Single-Button Port
 
-<img src='https://deauther.com/img/logo.png' alt='Deauther Logo' width='200' />
+Fork of [SpacehuhnTech/esp8266_deauther](https://github.com/SpacehuhnTech/esp8266_deauther) v2.6.1, adapted to run on a cheap "ESP8266 V3 + 0.96&Prime; OLED" dev board (CH340) that has **one physical button instead of four** and wires its display to non-standard I2C pins. Stock firmware just watchdog-reset-looped on this hardware; this fork fixes that and folds the UP/DOWN/A/B control scheme onto a single tap/hold gesture.
 
-**Scan for WiFi devices, block selected connections, create dozens of networks and confuse WiFi scanners.**
+All credit for the actual deauther engine — scanning, attack logic, the menu/CLI/web framework — goes to [Spacehuhn](https://github.com/spacehuhntech) and contributors. See `LICENSE` (MIT).
 
-## New Documentation
+## What's different from upstream
 
-Hi 👋  
-Please visit [Deauther.com](https://deauther.com) for information about this project.  
-Here are some quick links:
+- **New board config** — `esp8266_deauther/A_config.h`, `ANYX_ESP8266_V3_OLED`: SSD1306 over bit-banged I2C on GPIO14 (SDA) / GPIO12 (SCL), flipped orientation, single button on GPIO0.
+- **Single-button navigation** — `esp8266_deauther/DisplayUI.cpp`: tap advances the highlighted menu item (what UP/DOWN used to do), hold (800ms) opens/selects it (what A used to do). There's no dedicated back button — every submenu's own `[BACK]` entry is selected the same way, same as any other item.
+- **RANDOM ROUTERS menu item** — `esp8266_deauther/SSIDs.cpp` (`addRandomRouterNames`), wired into the SSIDs submenu. Adds up to 20 beacon-only decoy SSIDs styled like common router defaults (`TP-Link_4F2A`, `Keenetic_C019`, …) to clutter nearby WiFi scanners. Cosmetic WPA2 flag only — these aren't backed by a real access point, nothing can actually connect to them or hand over a password.
 
-* [Buy](https://deauther.com/docs/buy)
-* [Download](https://deauther.com/docs/download)
-* [DIY Tutorial](https://deauther.com/docs/category/diy-tutorial)
-* [Usage](https://deauther.com/docs/category/usage)
-* [FAQ](https://deauther.com/docs/faq)
+## Hardware
+
+| Pin | Function |
+|---|---|
+| GPIO14 (D5) | OLED SDA |
+| GPIO12 (D6) | OLED SCL |
+| GPIO0 (D3, FLASH button) | the only input — tap / hold |
+
+## Controls
+
+| Gesture | Does |
+|---|---|
+| Tap | Next item in the current list |
+| Hold ≥800ms | Open / select the highlighted item |
 
 ## Password
 
-The password for `pwned` is `deauther`
-
-## About this Project
-
-This firmware allows you to easily perform a variety of actions to test 802.11 networks using an [ESP8266](https://www.espressif.com/en/products/socs/esp8266). It's also a great project for learning about WiFi, microcontrollers, Arduino, hacking and electronics/programming in general.  
-
-The deauthentication attack is the main feature, which can be used to disconnect devices from their WiFi network.  
-Although this denial-of-service attack is nothing new, a lot of devices are still vulnerable to it. Luckily this is slowly changing with more WiFi 6 enabled devices being used. But a lot of outdated WiFi devices remain in place, for example in cheap IoT hardware.
-With an ESP8266 Deauther, you can easily test this attack on your 2.4GHz WiFi network/devices and see whether it's successful or not. And if it is, you know you should upgrade your network.
+The default config-AP password for `pwned` is `deauther` — change it (`set password <new>` over serial, or in the web UI) before relying on this for anything.
 
 ## Disclaimer
 
-This project is a proof of concept for testing and educational purposes.  
-Neither the ESP8266, nor its SDK was meant or built for such purposes. **Bugs can occur!**  
+Proof-of-concept firmware for testing and education. Neither the ESP8266 nor its SDK was built for this — bugs can occur.
 
-**Use it only against your own networks and devices!**  
-Please check the legal regulations in your country before using it.  
-We don't take any responsibility for what you do with this program.  
+**Use it only against your own networks and devices, or with explicit written authorization.** Check the legal regulations in your country before transmitting. We take no responsibility for what you do with this program.
