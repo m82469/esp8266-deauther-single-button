@@ -233,9 +233,15 @@ void DisplayUI::setup() {
             changeMenu(&ssidListMenu);
         });
         addMenuNode(&ssidListMenu, D_RANDOM_ROUTERS, [this]() { // RANDOM ROUTERS
-            ssids.addRandomRouterNames(20);
-            changeMenu(&ssidListMenu);
+            ssids.addRandomRouterNames(80);
             ssids.save(false);
+
+            // Also starts broadcasting them immediately (Beacon only), instead of
+            // requiring a separate trip through Attack -> Beacon -> Start.
+            beaconSelected = true;
+            attack.start(true, deauthSelected, false, probeSelected, true,
+                         settings::getAttackSettings().timeout * 1000);
+            changeMenu(&attackMenu);
         });
 
         // add ssids to list

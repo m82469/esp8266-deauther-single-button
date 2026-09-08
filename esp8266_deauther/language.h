@@ -148,6 +148,7 @@ const char CLI_HIDDEN[] PROGMEM = "hidden,-h";                 // hidden, -h
 const char CLI_CAPTIVEPORTAL[] PROGMEM = "captiveportal,-cp";  // captiveportal, -cp
 const char CLI_SELECT[] PROGMEM = "select/ed,-s";              // select, selected, -s
 const char CLI_SSID[] PROGMEM = "ssid/s,-s/s";                 // ssid, ssids, -s, -ss
+const char CLI_ROUTERS[] PROGMEM = "routers,-r";                // routers, -r
 const char CLI_AP[] PROGMEM = "ap/s,-ap/s";                    // ap, aps, -ap, -aps
 const char CLI_STATION[] PROGMEM = "station/s,-st";            // station, stations, -st
 const char CLI_NAME[] PROGMEM = "name/s,-n";                   // name, names, -n

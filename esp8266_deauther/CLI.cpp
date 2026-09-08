@@ -411,6 +411,12 @@ void CLI::runCommand(String input) {
             ssids.cloneSelected(force);
         }
 
+        // add ssid -routers <amount>
+        else if (eqlsCMD(2, CLI_ROUTERS)) {
+            int amount = (list->size() >= 4) ? list->get(3).toInt() : 20;
+            ssids.addRandomRouterNames(amount);
+        }
+
         // add ssid <ssid> [-wpa2] [-cl <clones>] [-f]
         // add ssid -ap <id> [-cl <clones>] [-f]
         else {
