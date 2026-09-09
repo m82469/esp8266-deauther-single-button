@@ -97,6 +97,19 @@
   .hazard p{margin:0; font-size:14px; color:var(--ink);}
   .hazard p + p{margin-top:8px; color:var(--ink-soft); font-size:13px;}
 
+  .info{
+    display:flex; gap:16px; align-items:flex-start;
+    background:var(--accent2-soft); border:1px solid var(--accent2);
+    border-radius:3px; padding:16px 18px; margin-top:16px;
+  }
+  .info p{margin:0; font-size:13.5px; color:var(--ink);}
+  .info p + p{margin-top:8px; color:var(--ink-soft); font-size:13px;}
+  .info .tag{
+    font-family:'IBM Plex Mono'; font-weight:600; font-size:11px; letter-spacing:.1em;
+    color:var(--accent2); border:1px solid var(--accent2); border-radius:2px;
+    padding:2px 7px; white-space:nowrap; flex-shrink:0;
+  }
+
   ol.steps{list-style:none; margin:0; padding:0; display:grid; gap:0;}
   ol.steps li{display:grid; grid-template-columns:40px 1fr; gap:16px; padding:14px 0; border-top:1px solid var(--line);}
   ol.steps li:last-child{border-bottom:1px solid var(--line);}
@@ -229,9 +242,10 @@
     <a href="#map"><span class="n">02</span>Карта меню</a>
     <a href="#controls"><span class="n">03</span>Кнопки</a>
     <a href="#modules"><span class="n">04</span>Разделы</a>
-    <a href="#settings"><span class="n">05</span>Настройки</a>
-    <a href="#serial"><span class="n">06</span>Serial-команды</a>
-    <a href="#rollback"><span class="n">07</span>Откат</a>
+    <a href="#howto"><span class="n">05</span>Как заглушить свою сеть</a>
+    <a href="#settings"><span class="n">06</span>Настройки</a>
+    <a href="#serial"><span class="n">07</span>Serial-команды</a>
+    <a href="#rollback"><span class="n">08</span>Откат</a>
   </nav>
 
   <section id="legal" style="margin-top:0;">
@@ -254,11 +268,11 @@
       </li>
       <li>
         <div class="num">2</div>
-        <div class="body"><b>Подключитесь к точке настройки</b><span>Сеть Wi&#8209;Fi <code>pwned</code>, пароль <code>deauther</code>, адрес <code>192.168.4.1</code> в браузере. Смените оба значения в &sect;05 прежде чем делать что&#8209;либо ещё &mdash; это заводские настройки, известные всем.</span></div>
+        <div class="body"><b>Подключитесь к точке настройки</b><span>Сеть Wi&#8209;Fi <code>pwned</code>, пароль <code>deauther</code>, адрес <code>192.168.4.1</code> в браузере. Смените оба значения в &sect;06 прежде чем делать что&#8209;либо ещё &mdash; это заводские настройки, известные всем.</span></div>
       </li>
       <li>
         <div class="num">3</div>
-        <div class="body"><b>Или без экрана &mdash; через serial</b><span>Откройте монитор порта на COM3, 115200 бод, и введите <code>help</code>. Каждому пункту экранного меню в этом справочнике соответствует команда из &sect;06.</span></div>
+        <div class="body"><b>Или без экрана &mdash; через serial</b><span>Откройте монитор порта на COM3, 115200 бод, и введите <code>help</code>. Каждому пункту экранного меню в этом справочнике соответствует команда из &sect;07.</span></div>
       </li>
       <li>
         <div class="num">4</div>
@@ -364,7 +378,7 @@
       <div class="btncard action"><div class="cap">TAP</div><b>Следующий пункт</b><span>Двигает выделение по текущему списку по кругу &mdash; то, что раньше делали UP/DOWN.</span></div>
       <div class="btncard"><div class="cap">HOLD</div><b>Выбор (&ge;800&nbsp;мс)</b><span>Открывает выделенный пункт &mdash; то, что раньше делала A. Долистайте до пункта <b>[BACK]</b> в конце списка и удержите &mdash; выход на уровень выше тем же жестом.</span></div>
     </div>
-    <p class="note" style="margin-top:14px; font-size:12.5px; color:var(--ink-soft); border-left:2px solid var(--line); padding-left:12px;">Компромисс: при одной паре жестов не осталось свободного жеста под старые контекстные действия кнопки A (долгое нажатие для переименования/удаления записи в Select) &mdash; они с экрана недоступны, используйте вместо них команды <code>set name</code> / <code>remove</code> из &sect;06.</p>
+    <p class="note" style="margin-top:14px; font-size:12.5px; color:var(--ink-soft); border-left:2px solid var(--line); padding-left:12px;">Компромисс: при одной паре жестов не осталось свободного жеста под старые контекстные действия кнопки A (долгое нажатие для переименования/удаления записи в Select) &mdash; они с экрана недоступны, используйте вместо них команды <code>set name</code> / <code>remove</code> из &sect;07.</p>
   </section>
 
   <section id="modules">
@@ -475,8 +489,30 @@
     </div>
   </section>
 
+  <section id="howto">
+    <div class="kicker">05 &middot; Практика</div>
+    <h2>Как заглушить свою точку доступа</h2>
+    <p class="lede">Самая частая причина «не работает» &mdash; не мощность и не прошивка, а пропущенный шаг 3. Без него DEAUTH включается, экран показывает статус, но пакетов уходит ровно ноль.</p>
+    <ol class="steps">
+      <li><div class="num">1</div><div class="body"><b>Scan</b><span>Главное меню &rarr; тап до SCAN &rarr; удержание &rarr; тап до SCAN AP+ST &rarr; удержание. Дождитесь конца сканирования.</span></div></li>
+      <li><div class="num">2</div><div class="body"><b>Найдите свою точку</b><span>Select &rarr; удержание &rarr; тап до Access Points &rarr; удержание &rarr; тапайте, пока не появится имя вашей сети &rarr; удержание, чтобы открыть её карточку.</span></div></li>
+      <li><div class="num">3</div><div class="body"><b>Выберите её как цель &mdash; шаг, который обычно забывают</b><span>Внутри карточки точки тапайте вниз до строки <b>SELECT / DESELECT</b> (не путать с именем сети сверху &mdash; это тоже переключатель, но нужна именно отдельная строка SELECT) и удержите. Строка должна показать звёздочку/отметку &mdash; это и есть подтверждение, что цель выбрана.</span></div></li>
+      <li><div class="num">4</div><div class="body"><b>Вернитесь в главное меню</b><span>Тапайте до пункта <b>[BACK]</b> и удерживайте &mdash; один раз до списка точек, второй раз до Select, третий до главного меню.</span></div></li>
+      <li><div class="num">5</div><div class="body"><b>Attack &rarr; DEAUTH &rarr; START</b><span>Тап до ATTACK &rarr; удержание &rarr; тап до DEAUTH &rarr; удержание включает его (появится &laquo;*&raquo;) &rarr; тап&times;3 до START &rarr; удержание запускает.</span></div></li>
+      <li><div class="num">6</div><div class="body"><b>Проверка</b><span>На строке DEAUTH должно расти <b>N/N</b> каждую секунду. Если там стабильный <b>0/0</b> &mdash; значит шаг 3 не сработал, вернитесь и выберите цель заново.</span></div></li>
+    </ol>
+
+    <div class="info">
+      <div class="tag">Если пакеты идут, а клиент не отваливается</div>
+      <div style="flex:1;">
+        <p>Проверьте на самом роутере настройку <b>802.11w / PMF (Protected Management Frames)</b> &mdash; в разделе безопасности Wi&#8209;Fi, рядом с выбором WPA2/WPA3. Если она включена (у многих роутеров &mdash; по умолчанию, особенно с WPA3), устройство просто игнорирует deauth&#8209;кадры, потому что они не подписаны &mdash; это защита самого протокола 802.11, а не что&#8209;то, что можно преодолеть большей мощностью передачи. Мощность в прошивке и так на максимуме (20.5&nbsp;dBm), усиливать нечего.</p>
+        <p>Временно выключите PMF на роутере и повторите тест &mdash; если после этого deauth сработал, вы только что подтвердили, что ваша сеть в обычном режиме от этой атаки защищена. Это хороший результат теста, а не сбой прошивки.</p>
+      </div>
+    </div>
+  </section>
+
   <section id="settings">
-    <div class="kicker">05 &middot; Конфигурация</div>
+    <div class="kicker">06 &middot; Конфигурация</div>
     <h2>Настройки</h2>
     <p class="lede">Читаются командой <code>get &lt;настройка&gt;</code>, меняются <code>set &lt;настройка&gt; &lt;значение&gt;</code>, сохраняются в SPIFFS через <code>save settings</code>. Строки с меткой <span class="pill attack">ATTACK</span> определяют агрессивность атаки.</p>
     <div class="tablewrap">
@@ -494,7 +530,7 @@
           <tr><td colspan="3" class="groupbar">Интерфейсы</td></tr>
           <tr><td class="key">displayInterface</td><td class="def">false</td><td>Включает меню на OLED. <b>По умолчанию выключено</b> &mdash; экран не заработает, пока не включить.</td></tr>
           <tr><td class="key">displayTimeout</td><td class="def">600с</td><td>Экран гаснет после стольких секунд бездействия; 0 &mdash; не гаснет.</td></tr>
-          <tr><td class="key">serialInterface</td><td class="def">true</td><td>Включает консоль команд из &sect;06.</td></tr>
+          <tr><td class="key">serialInterface</td><td class="def">true</td><td>Включает консоль команд из &sect;07.</td></tr>
           <tr><td class="key">serialEcho</td><td class="def">true</td><td>Дублирует каждую входящую serial-команду обратно в порт.</td></tr>
           <tr><td class="key">webInterface</td><td class="def">false</td><td>Включает веб-интерфейс в браузере.</td></tr>
           <tr><td class="key">webSpiffs</td><td class="def">false</td><td>Отдаёт файлы веб-интерфейса прямо из флеша &mdash; медленнее, зато можно править без перепрошивки.</td></tr>
@@ -524,7 +560,7 @@
   </section>
 
   <section id="serial">
-    <div class="kicker">06 &middot; Serial-консоль</div>
+    <div class="kicker">07 &middot; Serial-консоль</div>
     <h2>Справочник команд</h2>
     <p class="lede">115200 бод на COM3. Команда <code>help</code> на самом устройстве покажет живой список &mdash; здесь те же команды сгруппированы по назначению.</p>
     <div class="cmdgrid">
@@ -565,7 +601,7 @@
         <h4>Система</h4>
         <dl>
           <dt>sysinfo</dt><dd>ОЗУ, канал, MAC-адреса, использование SPIFFS.</dd>
-          <dt>get / set &lt;настройка&gt; &lt;значение&gt;</dt><dd>Прочитать или изменить любую настройку из &sect;05.</dd>
+          <dt>get / set &lt;настройка&gt; &lt;значение&gt;</dt><dd>Прочитать или изменить любую настройку из &sect;06.</dd>
           <dt>reboot / reset</dt><dd>Жёсткая перезагрузка либо сброс настроек по умолчанию.</dd>
         </dl>
       </div>
@@ -581,7 +617,7 @@
   </section>
 
   <section id="rollback">
-    <div class="kicker">07 &middot; Путь назад</div>
+    <div class="kicker">08 &middot; Путь назад</div>
     <h2>Откат прошивки</h2>
     <p class="lede">Точный заводской образ, снятый с этой платы до перепрошивки &mdash; полное чтение 4&nbsp;МБ, а не повторная загрузка откуда-то.</p>
     <div class="module" style="grid-template-columns:1fr;">
